@@ -42,6 +42,7 @@ namespace Hearthstone_Deck_Tracker.Windows
 		private const int MaxHandSize = 10;
 		private const int MaxBoardSize = 7;
 		private bool _mouseIsOverLeaderboardIcon = false;
+		private int _hoveredPlayerNumber = -1;
 		private int _nextOpponentLeaderboardPosition = -1;
 		private const int MouseLeaveEventDelay = 200;
 
@@ -104,6 +105,7 @@ namespace Hearthstone_Deck_Tracker.Windows
 					? Visibility.Collapsed
 					: Visibility.Visible;
 				Canvas.SetTop(_leaderboardIcons[i], LeaderboardTop + BattlegroundsTileHeight * i);
+				// maybe this math is what makes the previous board state never show up
 				Canvas.SetLeft(_leaderboardIcons[i], Helper.GetScaledXPos(0.001 * (_leaderboardIcons.Count - i - 1), (int)Width, ScreenRatio));
 			}
 
@@ -360,7 +362,7 @@ namespace Hearthstone_Deck_Tracker.Windows
 			FlavorTextVisibility = Visibility.Collapsed;
 		}
 
-		private void UpdateBattlegroundsOverlay()
+			private void UpdateBattlegroundsOverlay()
 		{
 			var cursorPos = GetCursorPos();
 			if(cursorPos.X == -1 && cursorPos.Y == -1)
@@ -368,6 +370,7 @@ namespace Hearthstone_Deck_Tracker.Windows
 			var shouldShowOpponentInfo = false;
 			var fadeBgsMinionsList = false;
 			_mouseIsOverLeaderboardIcon = false;
+			_hoveredPlayerNumber = -1;
 			var turn = _game.GetTurnNumber();
 			_leaderboardDeadForText.ForEach(x => x.Visibility = Visibility.Collapsed);
 			_leaderboardDeadForTurnText.ForEach(x => x.Visibility = Visibility.Collapsed);
@@ -378,6 +381,7 @@ namespace Hearthstone_Deck_Tracker.Windows
 				if(ElementContains(_leaderboardIcons[i], cursorPos))
 				{
 					_mouseIsOverLeaderboardIcon = true;
+					_hoveredPlayerNumber = i;
 					fadeBgsMinionsList = true;
 					_leaderboardDeadForText.ForEach(x => x.Visibility = Visibility.Visible);
 					_leaderboardDeadForTurnText.ForEach(x => x.Visibility = Visibility.Visible);
